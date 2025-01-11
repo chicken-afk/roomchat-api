@@ -36,9 +36,9 @@ func (a *authController) Login(c *gin.Context) {
 	}
 
 	/** Call service **/
-	data, err := service.Login(request)
+	data, httpStatus, err := service.Login(request)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
+		c.JSON(httpStatus, gin.H{
 			"success": false,
 			"message": err.Error(),
 		})

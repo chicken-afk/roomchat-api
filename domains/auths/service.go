@@ -13,7 +13,7 @@ import (
 var userRepo = users.NewUserRepository()
 
 type AuthService interface {
-	Login(request LoginRequest) (interface{}, error)
+	Login(request LoginRequest) (interface{}, int, error)
 	Register(request RegisterRequest) (interface{}, int, error)
 }
 
@@ -24,15 +24,38 @@ func NewAuthService() AuthService {
 	return &aService{}
 }
 
-func (a *aService) Login(request LoginRequest) (interface{}, error) {
+func (a *aService) Login(request LoginRequest) (interface{}, int, error) {
 	/**Call Repository**/
+	userRepo := users.NewUserRepository()
+
+	/**Get user by email**/
+	var user entities.User
+	err := userRepo.GetUserByEmail(request.Email, &user)
+	if err != nil && err.Error() != "record not found" {
+		return nil, http.StatusInternalServerError, err
+	}
+	if user.ID == 0 {
+		return nil, http.StatusUnprocessableEntity, errors.New("user not found")
+	}
+	/**validate password**/
+	isCorrectPassword := commons.VerifyPassword(user.Password, request.Password)
+	if !isCorrectPassword {
+		return nil, http.StatusUnprocessableEntity, errors.New("password not match")
+	}
+	/**Generate token**/
+	jwtServ := commons.NewJwtService()
+	token, err := jwtServ.GenerateToken(uint64(user.ID), uint64(user.ID))
+	if err != nil {
+		return nil, http.StatusInternalServerError, err
+	}
 
 	var response LoginResponse
-	response.Token = "ewafaofjds920r3jsda=29"
-	response.Uuid = "24802-4534-klasd-3j329"
+	response.Token = *token
 	response.Email = request.Email
+	response.ID = user.ID
+	response.Status = "Active"
 
-	return response, nil
+	return response, http.StatusOK, nil
 }
 
 func (a *aService) Register(request RegisterRequest) (interface{}, int, error) {
