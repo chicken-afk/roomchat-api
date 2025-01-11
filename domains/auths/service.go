@@ -66,8 +66,14 @@ func (a *aService) Register(request RegisterRequest) (interface{}, int, error) {
 
 	response.Email = request.Email
 	response.Status = "Active"
-	response.Token = "ewafaofjds920r3jsda=29"
 	response.ID = user.ID
+	//Generate token JWT
+	jwtServ := commons.NewJwtService()
+	token, err := jwtServ.GenerateToken(uint64(user.ID), uint64(user.ID))
+	if err != nil {
+		return nil, http.StatusInternalServerError, err
+	}
+	response.Token = *token
 
 	return response, http.StatusOK, nil
 }

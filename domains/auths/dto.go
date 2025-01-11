@@ -1,5 +1,7 @@
 package auths
 
+import "goboilerplate/commons"
+
 type LoginRequest struct {
 	Email    string `json:"email" binding:"required"`
 	Password string `json:"password" binding:"required"`
@@ -17,8 +19,8 @@ type LoginResponse struct {
 }
 
 type RegisterResponse struct {
-	ID     int    `json:"uuid"`
-	Email  string `json:"email"`
-	Status string `json:"status"`
-	Token  string `json:"token"`
+	ID     int                 `json:"uuid"`
+	Email  string              `json:"email"`
+	Status string              `json:"status"`
+	Token  commons.TokenDetail `json:"token"`
 }
