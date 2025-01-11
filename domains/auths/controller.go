@@ -1,6 +1,8 @@
 package auths
 
 import (
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 )
@@ -26,7 +28,7 @@ func (a *authController) Login(c *gin.Context) {
 	/** Get login request**/
 	var request LoginRequest
 	if err := c.ShouldBindJSON(&request); err != nil {
-		c.JSON(422, gin.H{
+		c.JSON(http.StatusUnprocessableEntity, gin.H{
 			"success": false,
 			"message": err.Error(),
 		})
@@ -36,14 +38,14 @@ func (a *authController) Login(c *gin.Context) {
 	/** Call service **/
 	data, err := service.Login(request)
 	if err != nil {
-		c.JSON(500, gin.H{
+		c.JSON(http.StatusInternalServerError, gin.H{
 			"success": false,
 			"message": err.Error(),
 		})
 		return
 	}
 
-	c.JSON(200, gin.H{
+	c.JSON(http.StatusOK, gin.H{
 		"success": true,
 		"message": "Login",
 		"data":    data,
@@ -56,7 +58,7 @@ func (a *authController) Register(c *gin.Context) {
 	/** Get register request**/
 	var request RegisterRequest
 	if err := c.ShouldBindJSON(&request); err != nil {
-		c.JSON(422, gin.H{
+		c.JSON(http.StatusUnprocessableEntity, gin.H{
 			"success": false,
 			"message": err.Error(),
 		})
@@ -66,14 +68,14 @@ func (a *authController) Register(c *gin.Context) {
 	/** Call service **/
 	data, err := service.Register(request)
 	if err != nil {
-		c.JSON(500, gin.H{
+		c.JSON(http.StatusInternalServerError, gin.H{
 			"success": false,
 			"message": err.Error(),
 		})
 		return
 	}
 
-	c.JSON(200, gin.H{
+	c.JSON(http.StatusOK, gin.H{
 		"success": true,
 		"message": "Register Success",
 		"data":    data,
