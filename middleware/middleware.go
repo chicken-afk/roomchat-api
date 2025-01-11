@@ -10,6 +10,7 @@ import (
 
 type Middleware interface {
 	HeaderAuth() gin.HandlerFunc
+	Auth() gin.HandlerFunc
 }
 
 type middleware struct{}
@@ -31,6 +32,24 @@ func (m *middleware) HeaderAuth() gin.HandlerFunc {
 			})
 			return
 		}
+		ctx.Next()
+	}
+}
+
+func (m *middleware) Auth() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		jwtServ := commons.NewJwtService()
+		token, err := jwtServ.ValidateJwtToken(ctx.Request)
+		if err != nil {
+			logrus.Error(err)
+			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+				"success": false,
+				"message": "Unauthorized, token invalid",
+			})
+			return
+		}
+
+		ctx.Set("token", token)
 		ctx.Next()
 	}
 }

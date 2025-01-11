@@ -1,6 +1,7 @@
 package commons
 
 import (
+	"errors"
 	"os"
 
 	"github.com/gin-gonic/gin"
@@ -27,10 +28,38 @@ func EncryptPassword(password string) (string, error) {
 	return string(hashedPassword), nil
 }
 
+// VerifyPassword checks if the provided plain text password matches the hashed password
+func VerifyPassword(hashedPassword, password string) bool {
+	logrus.Info("VerifyPassword")
+
+	// Compare the hashed password with the plain text password
+	err := bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
+	if err != nil {
+		logrus.Warn("Password verification failed: ", err)
+		return false
+	}
+
+	return true
+}
+
 func DialogError(message string, httpStatus int, ctx *gin.Context) {
 	//ctx.JSON(httpStatus, res)
 	ctx.AbortWithStatusJSON(httpStatus, gin.H{
 		"success": false,
 		"message": message,
 	})
+}
+
+func GetTokenFromMiddleware(ctx *gin.Context) (*UserValidateDTO, error) {
+	token, exists := ctx.Get("token")
+	if !exists {
+		return nil, errors.New("token not exist from middleware")
+	}
+
+	tokenData, ok := token.(*UserValidateDTO)
+	if !ok {
+		return nil, errors.New("err when binding token")
+	}
+
+	return tokenData, nil
 }

@@ -2,6 +2,7 @@ package router
 
 import (
 	"goboilerplate/domains/auths"
+	"goboilerplate/domains/users"
 	"goboilerplate/middleware"
 
 	"github.com/gin-contrib/cors"
@@ -33,6 +34,7 @@ func Router(r *gin.Engine) *gin.Engine {
 	})
 	// Add routes from other modules
 	auths.Router(routeV1)
+	users.Router(routeV1)
 
 	return r
 }
