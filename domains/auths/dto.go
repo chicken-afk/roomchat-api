@@ -17,7 +17,7 @@ type LoginResponse struct {
 }
 
 type RegisterResponse struct {
-	Uuid   string `json:"uuid"`
+	ID     int    `json:"uuid"`
 	Email  string `json:"email"`
 	Status string `json:"status"`
 	Token  string `json:"token"`

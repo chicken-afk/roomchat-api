@@ -66,9 +66,9 @@ func (a *authController) Register(c *gin.Context) {
 	}
 
 	/** Call service **/
-	data, err := service.Register(request)
+	data, headerStatus, err := service.Register(request)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
+		c.JSON(headerStatus, gin.H{
 			"success": false,
 			"message": err.Error(),
 		})
