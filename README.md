@@ -18,7 +18,7 @@ This is a Go boilerplate project following Domain-Driven Design (DDD) principles
 
 1. **Clone the repository:**
     ```sh
-    git clone https://github.com/yourusername/go-boiler-plate.git
+    git clone https://github.com/chicken-afk/go-boiler-plate.git
     cd go-boiler-plate
     ```
 
