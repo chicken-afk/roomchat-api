@@ -8,6 +8,7 @@ This is a Go boilerplate project following Domain-Driven Design (DDD) principles
 - PostgreSQL
 - Docker
 - Docker Compose
+- GO Gin
 
 ## Project Structure
 
