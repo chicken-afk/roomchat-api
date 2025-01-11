@@ -2,11 +2,14 @@ package router
 
 import (
 	"goboilerplate/domains/auths"
+	"goboilerplate/middleware"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 )
+
+var routeMiddleware = middleware.NewMiddleware()
 
 func Router(r *gin.Engine) *gin.Engine {
 	/* Cors */
@@ -19,6 +22,7 @@ func Router(r *gin.Engine) *gin.Engine {
 
 	// Prefix v1 for versioning
 	routeV1 := r.Group("/api/v1")
+	routeV1.Use(routeMiddleware.HeaderAuth())
 
 	/* Router */
 	routeV1.GET("/", func(c *gin.Context) {
