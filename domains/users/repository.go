@@ -1,8 +1,8 @@
 package users
 
 import (
-	"goboilerplate/database"
-	"goboilerplate/entities"
+	"chatroom-api/database"
+	"chatroom-api/entities"
 )
 
 var db = database.SetupDatabaseConnection()

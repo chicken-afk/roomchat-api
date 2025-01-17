@@ -1,7 +1,7 @@
 package users
 
 import (
-	"goboilerplate/entities"
+	"chatroom-api/entities"
 	"net/http"
 )
 

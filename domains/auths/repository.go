@@ -1,9 +1,9 @@
 package auths
 
 import (
-	"goboilerplate/commons"
-	"goboilerplate/database"
-	"goboilerplate/entities"
+	"chatroom-api/commons"
+	"chatroom-api/database"
+	"chatroom-api/entities"
 )
 
 var db = database.SetupDatabaseConnection()

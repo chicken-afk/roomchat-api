@@ -1,9 +1,9 @@
 package router
 
 import (
-	"goboilerplate/domains/auths"
-	"goboilerplate/domains/users"
-	"goboilerplate/middleware"
+	"chatroom-api/domains/auths"
+	"chatroom-api/domains/users"
+	"chatroom-api/middleware"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
