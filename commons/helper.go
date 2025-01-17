@@ -2,7 +2,9 @@ package commons
 
 import (
 	"errors"
+	"math/rand"
 	"os"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
@@ -62,4 +64,23 @@ func GetTokenFromMiddleware(ctx *gin.Context) (*UserValidateDTO, error) {
 	}
 
 	return tokenData, nil
+}
+
+func RandomRoomchatCode() string {
+	logrus.Info("RandomRoomchatCode")
+	// Generate a random room code
+
+	return "ROOM" + RandomString(6)
+}
+
+// RandomString generates a random string of the specified length.
+func RandomString(length int) string {
+	const charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+	seededRand := rand.New(rand.NewSource(time.Now().UnixNano()))
+
+	randomStr := make([]byte, length)
+	for i := range randomStr {
+		randomStr[i] = charset[seededRand.Intn(len(charset))]
+	}
+	return string(randomStr)
 }
