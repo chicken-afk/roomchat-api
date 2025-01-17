@@ -1,7 +1,7 @@
 package users
 
 import (
-	"goboilerplate/commons"
+	"chatroom-api/commons"
 
 	"github.com/gin-gonic/gin"
 )

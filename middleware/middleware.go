@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"goboilerplate/commons"
+	"chatroom-api/commons"
 	"net/http"
 
 	"github.com/gin-gonic/gin"

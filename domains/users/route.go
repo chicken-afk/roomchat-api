@@ -1,7 +1,7 @@
 package users
 
 import (
-	"goboilerplate/middleware"
+	"chatroom-api/middleware"
 
 	"github.com/gin-gonic/gin"
 )

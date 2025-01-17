@@ -1,7 +1,9 @@
 package main
 
 import (
-	"goboilerplate/router"
+	"chatroom-api/database"
+	"chatroom-api/entities"
+	"chatroom-api/router"
 	"os"
 
 	"github.com/gin-gonic/gin"
@@ -10,6 +12,14 @@ import (
 )
 
 func main() {
+
+	//Run gorm auto migrate
+	database.SetupDatabaseConnection().AutoMigrate(
+		// &entities.User{},
+		&entities.Roomchat{},
+		&entities.RoomchatUser{},
+	)
+
 	/* Load ENV */
 	errEnv := godotenv.Load()
 	if errEnv != nil {
@@ -24,5 +34,5 @@ func main() {
 	r := gin.Default()
 	// Call the Router function from router.go
 	router.Router(r)
-	r.Run(":8080")
+	r.Run(os.Getenv("RUN_PORT"))
 }

@@ -1,10 +1,10 @@
 package auths
 
 import (
+	"chatroom-api/commons"
+	"chatroom-api/domains/users"
+	"chatroom-api/entities"
 	"errors"
-	"goboilerplate/commons"
-	"goboilerplate/domains/users"
-	"goboilerplate/entities"
 	"net/http"
 
 	"github.com/sirupsen/logrus"

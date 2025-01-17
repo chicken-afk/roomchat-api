@@ -50,6 +50,10 @@ func SetupDatabaseConnection() *gorm.DB {
 		logrus.Fatal("failed to connect database: ", err)
 	}
 
+	if err != nil {
+		logrus.Fatal("Failed to migrate database schema:", err)
+	}
+
 	return db
 }
 

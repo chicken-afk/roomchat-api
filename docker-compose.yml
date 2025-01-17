@@ -3,7 +3,7 @@ version: '3.8'
 services:
   db:
     image: postgres:13
-    container_name: postgres
+    container_name: postgres-chatroom
     environment:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: password
