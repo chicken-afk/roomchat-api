@@ -28,7 +28,7 @@ func (m *middleware) HeaderAuth() gin.HandlerFunc {
 		if !success {
 			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
 				"success": false,
-				"message": "Unauthorized",
+				"message": "Header authorization is needed",
 			})
 			return
 		}

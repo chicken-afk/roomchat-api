@@ -31,7 +31,7 @@ func SetupDatabaseConnection() *gorm.DB {
 
 	if os.Getenv("SERVICE_MODE") == "develop" {
 		// Use standard PostgreSQL driver for local development
-		logrus.Info("Using local development mode")
+		// logrus.Info("Using local development mode")
 		dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable",
 			dbHost, dbUser, dbPass, dbName, dbPort)
 		dialector = postgres.Open(dsn)

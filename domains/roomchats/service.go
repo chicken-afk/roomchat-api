@@ -9,6 +9,7 @@ import (
 type RoomchatService interface {
 	CreateRoomchat(roomchat RoomchatRequest) (entities.Roomchat, error)
 	JoinRoomchat(email string, roomId uint64) (entities.RoomchatUser, error)
+	GetRoomchatByUserId(userIds []int64) (entities.Roomchat, int, error)
 }
 
 type roomchatService struct{}
@@ -45,4 +46,14 @@ func (r *roomchatService) JoinRoomchat(email string, roomId uint64) (entities.Ro
 		return roomchatUser, err
 	}
 	return roomchatUser, nil
+}
+
+func (r *roomchatService) GetRoomchatByUserId(userIds []int64) (entities.Roomchat, int, error) {
+	//Call Repo
+	roomchatRepo := NewRoomchatRepository()
+	roomchat, httpStatus, err := roomchatRepo.GetRoomchatByUserId(userIds)
+	if err != nil {
+		return roomchat, httpStatus, err
+	}
+	return roomchat, httpStatus, nil
 }
