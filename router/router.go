@@ -2,6 +2,7 @@ package router
 
 import (
 	"chatroom-api/domains/auths"
+	"chatroom-api/domains/roomchats"
 	"chatroom-api/domains/users"
 	"chatroom-api/middleware"
 
@@ -35,6 +36,7 @@ func Router(r *gin.Engine) *gin.Engine {
 	// Add routes from other modules
 	auths.Router(routeV1)
 	users.Router(routeV1)
+	roomchats.Router(routeV1)
 
 	return r
 }

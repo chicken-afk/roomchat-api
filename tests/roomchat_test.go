@@ -3,6 +3,7 @@ package tests
 import (
 	"chatroom-api/database"
 	"chatroom-api/domains/roomchats"
+	"io/ioutil"
 	"strconv"
 	"testing"
 
@@ -12,6 +13,8 @@ import (
 )
 
 func TestCreateRoomchat(t *testing.T) {
+	// Suppress logrus output by setting the log level to PanicLevel
+	logrus.SetOutput(ioutil.Discard)
 	// Load environment variables
 	err := godotenv.Load()
 	require.NoError(t, err, "Failed to load environment variables")
@@ -56,6 +59,8 @@ func TestCreateRoomchat(t *testing.T) {
 }
 
 func TestJoinRoomchat(t *testing.T) {
+	// Suppress logrus output by setting the log level to PanicLevel
+	logrus.SetLevel(logrus.PanicLevel)
 	// Load environment variables
 	err := godotenv.Load()
 	require.NoError(t, err, "Failed to load environment variables")
