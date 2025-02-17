@@ -10,6 +10,8 @@ import (
 
 type RoomchatController interface {
 	StartRoomchat(c *gin.Context)
+	SendMessage(c *gin.Context)
+	GetRoomchats(c *gin.Context)
 }
 
 type roomchatController struct{}
@@ -126,6 +128,60 @@ func (r *roomchatController) StartRoomchat(c *gin.Context) {
 		"success": true,
 		"message": "Success Create or Get Roomchat",
 		"data":    res,
+	})
+	return
+}
+
+func (r *roomchatController) SendMessage(c *gin.Context) {
+	tokenData, err := commons.GetTokenFromMiddleware(c)
+	if err != nil {
+		c.JSON(401, gin.H{
+			"success": false,
+			"message": "Unauthorized",
+		})
+		return
+	}
+	//Get User From tokenid
+	userServ := users.NewUserService()
+	userLogin, _, _ := userServ.GetUserById(tokenData.UserId)
+
+	/* Get user from context */
+	c.JSON(200, gin.H{
+		"success": true,
+		"message": "Success Send Message",
+		"data":    userLogin,
+	})
+	return
+}
+
+func (r *roomchatController) GetRoomchats(c *gin.Context) {
+	tokenData, err := commons.GetTokenFromMiddleware(c)
+	if err != nil {
+		c.JSON(401, gin.H{
+			"success": false,
+			"message": "Unauthorized",
+		})
+		return
+	}
+	//Get User From tokenid
+	userServ := users.NewUserService()
+	userLogin, _, _ := userServ.GetUserById(tokenData.UserId)
+
+	roomchatServ := NewRoomchatService()
+	//Get roomchat by user id
+	roomchat, err := roomchatServ.GetRoomchatUsers(int64(userLogin.ID))
+	if err != nil {
+		c.JSON(http.StatusUnprocessableEntity, gin.H{
+			"success": false,
+			"message": err.Error(),
+		})
+		return
+	}
+	/* Get user from context */
+	c.JSON(200, gin.H{
+		"success": true,
+		"message": "Success Get Roomchat",
+		"data":    roomchat,
 	})
 	return
 }

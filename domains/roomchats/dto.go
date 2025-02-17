@@ -9,3 +9,8 @@ type RoomchatRequest struct {
 type StartRoomchatRequest struct {
 	Email string `json:"email"`
 }
+
+type SendMessageRequest struct {
+	RoomchatId string `json:"roomchat_id"`
+	Message    string `json:"message"`
+}

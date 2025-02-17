@@ -5,6 +5,8 @@ import (
 	"chatroom-api/entities"
 	"net/http"
 	"time"
+
+	"github.com/sirupsen/logrus"
 )
 
 var db = database.SetupDatabaseConnection()
@@ -13,6 +15,7 @@ type RoomchatRepository interface {
 	CreateRoomchat(roomchat *entities.Roomchat) error
 	JoinRoomchat(userId uint64, roomId uint64) (entities.RoomchatUser, error)
 	GetRoomchatByUserId(userIds []int64) (entities.Roomchat, int, error)
+	GetRoomchatUsers(userId int64) ([]entities.Roomchat, error)
 }
 
 type roomchatRepository struct{}
@@ -76,6 +79,8 @@ func (r *roomchatRepository) GetRoomchatByUserId(userIds []int64) (entities.Room
 			Where("roomchat_id = ?", roomID).
 			Count(&userCount).Error
 
+		//logging user count
+		logrus.Info("User count: ", userCount)
 		if err != nil {
 			return roomchat, http.StatusInternalServerError, err
 		}
@@ -97,4 +102,29 @@ func (r *roomchatRepository) GetRoomchatByUserId(userIds []int64) (entities.Room
 	}
 
 	return roomchat, http.StatusOK, nil
+}
+
+func (r *roomchatRepository) GetRoomchatUsers(userId int64) ([]entities.Roomchat, error) {
+	var roomchats []entities.Roomchat
+	var roomchatIds []int64
+	// Ambil roomchat_id yang memiliki user sesuai userIds
+	err := db.Table("roomchat_users").
+		Select("roomchat_id").
+		Where("user_id = ?", userId).
+		Pluck("roomchat_id", &roomchatIds).Error
+	if err != nil {
+		return roomchats, err
+	}
+
+	if len(roomchatIds) == 0 {
+		return []entities.Roomchat{}, nil // Tidak ada room yang sesuai
+	}
+
+	// Ambil data roomchat berdasarkan roomchatIds
+	err = db.Where("id IN (?)", roomchatIds).Find(&roomchats).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return roomchats, nil
 }

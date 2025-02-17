@@ -12,6 +12,7 @@ var routeMiddleware = middleware.NewMiddleware()
 func Router(r *gin.RouterGroup) *gin.RouterGroup {
 	/* Router */
 	r.POST("/create-roomchat", routeMiddleware.Auth(), roomController.StartRoomchat)
+	r.GET("/roomchats", routeMiddleware.Auth(), roomController.GetRoomchats)
 
 	return r
 }
