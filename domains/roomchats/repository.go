@@ -3,19 +3,25 @@ package roomchats
 import (
 	"chatroom-api/database"
 	"chatroom-api/entities"
+	"context"
+	"encoding/json"
 	"net/http"
+	"os"
 	"time"
 
+	"github.com/olivere/elastic/v7"
 	"github.com/sirupsen/logrus"
 )
 
 var db = database.SetupDatabaseConnection()
+var elasticClient = database.SetupElasticConnection()
 
 type RoomchatRepository interface {
 	CreateRoomchat(roomchat *entities.Roomchat) error
 	JoinRoomchat(userId uint64, roomId uint64) (entities.RoomchatUser, error)
 	GetRoomchatByUserId(userIds []int64) (entities.Roomchat, int, error)
 	GetRoomchatUsers(userId int64) ([]entities.Roomchat, error)
+	GetChatHistories(roomId string) ([]entities.ChatHistory, error)
 }
 
 type roomchatRepository struct{}
@@ -127,4 +133,32 @@ func (r *roomchatRepository) GetRoomchatUsers(userId int64) ([]entities.Roomchat
 	}
 
 	return roomchats, nil
+}
+
+func (r *roomchatRepository) GetChatHistories(roomId string) ([]entities.ChatHistory, error) {
+
+	chatHistoriesIndex := os.Getenv("ELASTIC_CHAT_HISTORIES_INDEX")
+	// Search chat histories from elastic search
+	chatHistories := []entities.ChatHistory{}
+	ctx := context.Background()
+	query := elastic.NewMatchQuery("room_id", roomId)
+	searchResult, err := elasticClient.Search().
+		Index(chatHistoriesIndex).
+		Query(query).
+		Sort("created_at", false).
+		Do(ctx)
+	if err != nil {
+		return chatHistories, err
+	}
+
+	for _, hit := range searchResult.Hits.Hits {
+		var chatHistory entities.ChatHistory
+		err := json.Unmarshal(hit.Source, &chatHistory)
+		if err != nil {
+			return chatHistories, err
+		}
+		chatHistories = append(chatHistories, chatHistory)
+	}
+
+	return chatHistories, nil
 }

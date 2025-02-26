@@ -12,6 +12,7 @@ type RoomchatController interface {
 	StartRoomchat(c *gin.Context)
 	SendMessage(c *gin.Context)
 	GetRoomchats(c *gin.Context)
+	GetChatHistories(c *gin.Context)
 }
 
 type roomchatController struct{}
@@ -182,6 +183,49 @@ func (r *roomchatController) GetRoomchats(c *gin.Context) {
 		"success": true,
 		"message": "Success Get Roomchat",
 		"data":    roomchat,
+	})
+	return
+}
+
+func (r *roomchatController) GetChatHistories(c *gin.Context) {
+	// tokenData, err := commons.GetTokenFromMiddleware(c)
+	// if err != nil {
+	// 	c.JSON(401, gin.H{
+	// 		"success": false,
+	// 		"message": "Unauthorized",
+	// 	})
+	// 	return
+	// }
+	//Get User From tokenid
+	// userServ := users.NewUserService()
+	// userLogin, _, _ := userServ.GetUserById(tokenData.UserId)
+
+	roomId := c.Param("roomId")
+
+	if roomId == "" {
+		c.JSON(400, gin.H{
+			"success": false,
+			"message": "Room ID is required",
+		})
+		return
+	}
+
+	roomchatServ := NewRoomchatService()
+	//Get chat histories
+	chatHistories, err := roomchatServ.GetChatHistories(roomId)
+	if err != nil {
+		c.JSON(http.StatusUnprocessableEntity, gin.H{
+			"success": false,
+			"message": err.Error(),
+		})
+		return
+	}
+
+	/* Get user from context */
+	c.JSON(200, gin.H{
+		"success": true,
+		"message": "Success Get Chat Histories",
+		"data":    chatHistories,
 	})
 	return
 }
