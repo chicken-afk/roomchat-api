@@ -15,7 +15,7 @@ func main() {
 
 	//Run gorm auto migrate
 	database.SetupDatabaseConnection().AutoMigrate(
-		// &entities.User{},
+		&entities.User{},
 		&entities.Roomchat{},
 		&entities.RoomchatUser{},
 	)

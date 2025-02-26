@@ -10,6 +10,8 @@ type RoomchatService interface {
 	CreateRoomchat(roomchat RoomchatRequest) (entities.Roomchat, error)
 	JoinRoomchat(email string, roomId uint64) (entities.RoomchatUser, error)
 	GetRoomchatByUserId(userIds []int64) (entities.Roomchat, int, error)
+	GetRoomchatUsers(userId int64) ([]entities.Roomchat, error)
+	GetChatHistories(roomId string) ([]entities.ChatHistory, error)
 }
 
 type roomchatService struct{}
@@ -56,4 +58,24 @@ func (r *roomchatService) GetRoomchatByUserId(userIds []int64) (entities.Roomcha
 		return roomchat, httpStatus, err
 	}
 	return roomchat, httpStatus, nil
+}
+
+func (r *roomchatService) GetRoomchatUsers(userId int64) ([]entities.Roomchat, error) {
+	//Call Repo
+	roomchatRepo := NewRoomchatRepository()
+	roomchat, err := roomchatRepo.GetRoomchatUsers(userId)
+	if err != nil {
+		return roomchat, err
+	}
+	return roomchat, nil
+}
+
+func (r *roomchatService) GetChatHistories(roomId string) ([]entities.ChatHistory, error) {
+	//Call Repo
+	roomchatRepo := NewRoomchatRepository()
+	chatHistories, err := roomchatRepo.GetChatHistories(roomId)
+	if err != nil {
+		return chatHistories, err
+	}
+	return chatHistories, nil
 }
