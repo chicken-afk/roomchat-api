@@ -4,9 +4,9 @@ import (
 	"chatroom-api/database"
 	"chatroom-api/entities"
 	"chatroom-api/router"
-	"net/http"
 	"os"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"github.com/sirupsen/logrus"
@@ -34,18 +34,14 @@ func main() {
 
 	r := gin.Default()
 
-	// Add CORS middleware
-	r.Use(func(c *gin.Context) {
-		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
-		c.Writer.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
-		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, x-api-key")
-		// Handle OPTIONS request immediately
-		if c.Request.Method == "OPTIONS" {
-			c.Writer.WriteHeader(http.StatusOK)
-			return
-		}
-		c.Next()
-	})
+	// Use CORS middleware
+	r.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"*"}, // Change this to frontend URL in production
+		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowHeaders:     []string{"Content-Type", "Authorization", "x-api-key"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+	}))
 
 	// Call the Router function from router.go
 	router.Router(r)
