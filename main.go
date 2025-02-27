@@ -4,6 +4,7 @@ import (
 	"chatroom-api/database"
 	"chatroom-api/entities"
 	"chatroom-api/router"
+	"net/http"
 	"os"
 
 	"github.com/gin-gonic/gin"
@@ -38,7 +39,11 @@ func main() {
 		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
 		c.Writer.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
 		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, x-api-key")
-
+		// Handle OPTIONS request immediately
+		if c.Request.Method == "OPTIONS" {
+			c.Writer.WriteHeader(http.StatusOK)
+			return
+		}
 		c.Next()
 	})
 
