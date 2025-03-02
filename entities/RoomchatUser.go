@@ -8,4 +8,5 @@ type RoomchatUser struct {
 	UserID     uint64    `gorm:"not null" json:"user_id"`
 	CreatedAt  time.Time `gorm:"autoCreateTime" json:"created_at"`
 	UpdatedAt  time.Time `gorm:"autoUpdateTime" json:"updated_at"`
+	User       User      `gorm:"foreignKey:UserID" json:"user"`
 }

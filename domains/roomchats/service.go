@@ -10,7 +10,7 @@ type RoomchatService interface {
 	CreateRoomchat(roomchat RoomchatRequest) (entities.Roomchat, error)
 	JoinRoomchat(email string, roomId uint64) (entities.RoomchatUser, error)
 	GetRoomchatByUserId(userIds []int64) (entities.Roomchat, int, error)
-	GetRoomchatUsers(userId int64) ([]entities.Roomchat, error)
+	GetRoomchatUsers(userId int64) ([]RoomlistResponse, error)
 	GetChatHistories(roomId string) ([]entities.ChatHistory, error)
 }
 
@@ -60,14 +60,31 @@ func (r *roomchatService) GetRoomchatByUserId(userIds []int64) (entities.Roomcha
 	return roomchat, httpStatus, nil
 }
 
-func (r *roomchatService) GetRoomchatUsers(userId int64) ([]entities.Roomchat, error) {
+func (r *roomchatService) GetRoomchatUsers(userId int64) ([]RoomlistResponse, error) {
 	//Call Repo
+	var roomlist []RoomlistResponse
 	roomchatRepo := NewRoomchatRepository()
 	roomchat, err := roomchatRepo.GetRoomchatUsers(userId)
-	if err != nil {
-		return roomchat, err
+	//Mapping roomchat to roomlist
+	for _, room := range roomchat {
+		var userlist []UserResponse
+		for _, user := range room.Users {
+			userlist = append(userlist, UserResponse{
+				ID:    user.ID,
+				Email: user.Email,
+			})
+		}
+		roomlist = append(roomlist, RoomlistResponse{
+			RoomId:    room.RoomId,
+			RoomName:  room.RoomName,
+			CreatedAt: room.CreatedAt.Format("2006-01-02 15:04:05"),
+			Users:     userlist,
+		})
 	}
-	return roomchat, nil
+	if err != nil {
+		return roomlist, err
+	}
+	return roomlist, nil
 }
 
 func (r *roomchatService) GetChatHistories(roomId string) ([]entities.ChatHistory, error) {

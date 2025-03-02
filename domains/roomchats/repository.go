@@ -11,6 +11,7 @@ import (
 
 	"github.com/olivere/elastic/v7"
 	"github.com/sirupsen/logrus"
+	"gorm.io/gorm"
 )
 
 var db = database.SetupDatabaseConnection()
@@ -127,10 +128,15 @@ func (r *roomchatRepository) GetRoomchatUsers(userId int64) ([]entities.Roomchat
 	}
 
 	// Ambil data roomchat berdasarkan roomchatIds
-	err = db.Where("id IN (?)", roomchatIds).Find(&roomchats).Error
+	err = db.Preload("Users", func(db *gorm.DB) *gorm.DB {
+		return db.Select("id, email")
+	}).Where("id IN (?)", roomchatIds).Find(&roomchats).Error
+
 	if err != nil {
 		return nil, err
 	}
+
+	logrus.Info("Roomchats: ", roomchats)
 
 	return roomchats, nil
 }

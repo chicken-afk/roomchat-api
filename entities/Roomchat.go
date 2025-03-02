@@ -9,4 +9,5 @@ type Roomchat struct {
 	CreatedBy uint64    `gorm:"null" json:"created_by"`           // Not null
 	CreatedAt time.Time `gorm:"autoCreateTime" json:"created_at"` // Auto-generated timestamp
 	UpdatedAt time.Time `gorm:"autoUpdateTime" json:"updated_at"` // Auto-generated timestamp
+	Users     []User    `gorm:"many2many:roomchat_users;foreignKey:ID;joinForeignKey:RoomchatID;References:ID;joinReferences:UserID" json:"users"`
 }
